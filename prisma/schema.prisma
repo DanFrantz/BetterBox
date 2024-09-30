@@ -17,17 +17,22 @@ model Post {
   slug     String    @unique
   title    String
   body     String
-  author   User      @relation(fields: [authorId], references: [id])
-  authorId String    @db.ObjectId
-  comments Comment[]
+  user     User      @relation(fields: [userId], references: [id])
+  userId   String    @db.ObjectId
+  comments Comment[] @relation
+  movie    Movie     @relation(fields: [movieId], references: [id])
+  movieId  String    @db.ObjectId
 }
 
 model User {
-  id      String   @id @default(auto()) @map("_id") @db.ObjectId
-  email   String   @unique
-  name    String?
-  address Address?
-  posts   Post[]
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  email    String   @unique
+  username String   @unique
+  name     String?
+  location Address?
+  posts    Post[]  
+  comments Comment[] 
+  movies   Movie[] 
 }
 
 model Comment {
@@ -35,8 +40,23 @@ model Comment {
   comment String
   post    Post   @relation(fields: [postId], references: [id])
   postId  String @db.ObjectId
+  author  User   @relation(fields: [authorId], references: [id])
+  authorId String@db.ObjectId
 }
 
+
+model Movie{
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  posts Post[]
+  postsId String @db.ObjectId
+  user User @relation(fields: [userId], references: [id])
+  userId String @db.ObjectId
+  name String @unique
+  synopsis String
+  length String
+  release String
+
+}
 // Address is an embedded document
 type Address {
   street String
